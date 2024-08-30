@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.actions > :first-child {
+  margin-bottom: 0.5rem;
+}
+
+.gallery {
+  padding: 1rem 3rem;
+  text-align: center;
+}
+
+.gallery ul {
+  list-style: none;
+  padding-left: 0;
+}

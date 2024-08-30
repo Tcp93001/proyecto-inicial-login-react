@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer, useContext } from "react";
-
+import { useNavigate, useLocation } from 'react-router-dom';
 import Card from "../UI/Card/Card";
 import Button from "../UI/Button/Button";
 import styles from "./Login.module.css";
@@ -18,11 +18,16 @@ function emailReducer(state, action) {
 }
 
 function Login() {
+  const {onLogin} = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  let from = location.state?.from?.pathname || '/';
+  console.log('from login', from)
+
   const [password, setPassword] = useState("");
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
-  const {onLogin} = useContext(AuthContext)
 
   const initialState = {
     value: '',
@@ -59,7 +64,13 @@ function Login() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    onLogin(emailState.value, password);
+    onLogin(emailState.value, (userId) => {
+      console.log('login userId', userId);
+      console.log('from ONLOGIN', from)
+      if( from === '/home') from = `${from}/${userId}`
+      navigate(from, { replace:true });
+    })
+    // onLogin(emailState.value, password);
   };
 
   return (

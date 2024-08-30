@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 
-const AuthContext = React.createContext({
+const AuthContext = createContext({
   isLoggedIn: false,
   onLogOut: () => {},
   onLogIn: () => {}
@@ -14,9 +14,8 @@ export function AuthContextProvider(props) {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isLoggedIn");
 
-    if (isAuthenticated === "1") {
-      setIsLoggedIn(true);
-    }
+    if (isAuthenticated === "1") setIsLoggedIn(true);
+
   }, []);
 
   const fetchUser = async (email) => {
@@ -28,7 +27,7 @@ export function AuthContextProvider(props) {
     return response.json();
   }
 
-  const loginHandler = async (email) => {
+  const loginHandler = async (email, callback) => {
     try {
       const user = await fetchUser(email);
       const userId = Object.keys(user)[0];
@@ -36,6 +35,8 @@ export function AuthContextProvider(props) {
       localStorage.setItem("isLoggedIn", "1");
       localStorage.setItem("userId", userId);
       setIsLoggedIn(true);
+
+      return callback(userId);
     } catch (error) {
       console.log('error --- >  ', error.message)
     }

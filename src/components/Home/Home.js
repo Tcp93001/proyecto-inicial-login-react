@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
 import useHttp from "../../hooks/use-http";
 import Card from "../UI/Card/Card";
 import styles from "./Home.module.css";
@@ -6,6 +7,9 @@ import styles from "./Home.module.css";
 const BASE_URL = 'https://react-http-b9402-default-rtdb.firebaseio.com/'; // process.env.BASE_URL
 
 function Home() {
+  const {userId} = useParams();
+  const navigate = useNavigate();
+
   const [user, setUser] = useState({
     first_name: '',
     last_name: '',
@@ -16,24 +20,25 @@ function Home() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userId = localStorage.getItem('userId');
-      const url = `${BASE_URL}users.json?orderBy="$key"&equalTo="${userId}"`;
+      const userNumber = localStorage.getItem('userId');
+      if (!userNumber) {
+        navigate('login', {replace: true})
+        return
+      }
+      const url = `${BASE_URL}users.json?orderBy="$key"&equalTo="${userNumber}"`;
       const data = await request({ url });
 
-      // Se eliminó el error en el response porque ese lo define el custom hook, así
-      // como la conversión a JSON de la respuesta, que también ya la hace el custom hook
-
       setUser({
-        first_name: data[userId].first_name,
-        last_name: data[userId].last_name,
-        email: data[userId].email,
+        first_name: data[userId]?.first_name,
+        last_name: data[userId]?.last_name,
+        email: data[userId]?.email,
       });
 
     }
 
     fetchUser();
 
-  }, [request]);
+  }, [request, userId, navigate]);
 
   const errorMessage = <h2>{error}</h2>
 
@@ -47,7 +52,7 @@ function Home() {
         <>
           <h1>¡Bienvenido!</h1>
           <h2>
-            {user.first_name} {user.last_name}
+            {user?.first_name} {user?.last_name}
           </h2>
         </>
       )

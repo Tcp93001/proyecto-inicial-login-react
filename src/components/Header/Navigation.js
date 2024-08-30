@@ -1,30 +1,39 @@
 import { useContext } from "react";
+import { Link } from 'react-router-dom';
+import AuthContext from "../../context/AuthContext";
 import Button from "../UI/Button/Button";
 import styles from "./Navigation.module.css";
-import AuthContext from "../../context/AuthContext";
 
-function Navigation(props) {
-  const { isLoggedIn, onLogout } = useContext(AuthContext)
+
+function Navigation() {
+
+  const { isLoggedIn, onLogout } = useContext(AuthContext);
+
   return (
     <nav className={styles.nav}>
       <ul>
-        {isLoggedIn && (
-          <li>
-            <a href="/">Usuarios</a>
-          </li>
-        )}
-        {isLoggedIn && (
-          <li>
-            <a href="/">Admin</a>
-          </li>
-        )}
-        {isLoggedIn && (
-          <li>
+
+        <li>
+          <Link to="/">Public</Link>
+        </li>
+
+        <li>
+          <Link to="/gallery">Gallery</Link>
+        </li>
+
+        <li>
+          <Link to="/home">Home</Link>
+        </li>
+
+        <li>
+          {isLoggedIn ? (
             <Button onClick={onLogout} color="secondary">
-              Salir
+              Logout
             </Button>
-          </li>
-        )}
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+        </li>
       </ul>
     </nav>
   );
