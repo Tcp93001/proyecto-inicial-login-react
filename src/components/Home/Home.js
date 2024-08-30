@@ -25,7 +25,8 @@ function Home() {
         navigate('login', {replace: true})
         return
       }
-      const url = `${BASE_URL}users.json?orderBy="$key"&equalTo="${userNumber}"`;
+
+      const url = `${BASE_URL}users.json?orderBy="$key"&equalTo="${userId}"`;
       const data = await request({ url });
 
       setUser({
